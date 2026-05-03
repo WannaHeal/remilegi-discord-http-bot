@@ -1,7 +1,7 @@
 {
-  "name": "awwbot",
+  "name": "remilegi-discord-http-bot",
   "version": "1.0.0",
-  "description": "A simple discord bot that uses intents to post pictures from r/aww",
+  "description": "A Discord HTTP bot that provides BMS info and cafe links",
   "type": "module",
   "private": true,
   "main": "src/server.js",
@@ -15,7 +15,7 @@
     "publish": "wrangler deploy"
   },
   "keywords": [],
-  "author": "Justin Beckwith <justin.beckwith@gmail.com>",
+  "author": "",
   "license": "MIT",
   "dependencies": {
     "discord-interactions": "^4.0.0",

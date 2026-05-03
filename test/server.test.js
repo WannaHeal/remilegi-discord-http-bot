@@ -1,14 +1,8 @@
 import { expect } from 'chai';
 import { describe, it, beforeEach, afterEach } from 'mocha';
-import {
-  InteractionResponseType,
-  InteractionType,
-  InteractionResponseFlags,
-} from 'discord-interactions';
-import { AWW_COMMAND, INVITE_COMMAND } from '../src/commands.js';
+import { InteractionResponseType, InteractionType } from 'discord-interactions';
 import sinon from 'sinon';
 import server from '../src/server.js';
-import { redditUrl } from '../src/reddit.js';
 
 describe('Server', () => {
   describe('GET /', () => {
@@ -59,11 +53,11 @@ describe('Server', () => {
       expect(body.type).to.equal(InteractionResponseType.PONG);
     });
 
-    it('should handle an AWW command interaction', async () => {
+    it('should handle a bmsinfo command interaction', async () => {
       const interaction = {
         type: InteractionType.APPLICATION_COMMAND,
         data: {
-          name: AWW_COMMAND.name,
+          name: 'bmsinfo',
         },
       };
 
@@ -79,30 +73,21 @@ describe('Server', () => {
         interaction: interaction,
       });
 
-      // mock the fetch call to reddit
-      const result = sinon
-        // eslint-disable-next-line no-undef
-        .stub(global, 'fetch')
-        .withArgs(redditUrl)
-        .resolves({
-          status: 200,
-          ok: true,
-          json: sinon.fake.resolves({ data: { children: [] } }),
-        });
-
       const response = await server.fetch(request, env);
       const body = await response.json();
       expect(body.type).to.equal(
         InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       );
-      expect(result.calledOnce);
+      expect(body.data.content).to.equal(
+        '븜스 입문용 정보 저장소입니다! https://sites.google.com/view/remilegi-bms',
+      );
     });
 
-    it('should handle an invite command interaction', async () => {
+    it('should handle a cafe command interaction', async () => {
       const interaction = {
         type: InteractionType.APPLICATION_COMMAND,
         data: {
-          name: INVITE_COMMAND.name,
+          name: '카페',
         },
       };
 
@@ -111,9 +96,7 @@ describe('Server', () => {
         url: new URL('/', 'http://discordo.example'),
       };
 
-      const env = {
-        DISCORD_APPLICATION_ID: '123456789',
-      };
+      const env = {};
 
       verifyDiscordRequestStub.resolves({
         isValid: true,
@@ -125,13 +108,10 @@ describe('Server', () => {
       expect(body.type).to.equal(
         InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
       );
-      expect(body.data.content).to.include(
-        'https://discord.com/oauth2/authorize?client_id=123456789&scope=applications.commands',
-      );
-      expect(body.data.flags).to.equal(InteractionResponseFlags.EPHEMERAL);
+      expect(body.data.content).to.equal('사좋돌아 https://sadoljoa.co.kr');
     });
 
-    it('should handle an unknown command interaction', async () => {
+    it('should default unknown commands to bmsinfo response', async () => {
       const interaction = {
         type: InteractionType.APPLICATION_COMMAND,
         data: {
@@ -151,8 +131,12 @@ describe('Server', () => {
 
       const response = await server.fetch(request, {});
       const body = await response.json();
-      expect(response.status).to.equal(400);
-      expect(body.error).to.equal('Unknown Type');
+      expect(body.type).to.equal(
+        InteractionResponseType.CHANNEL_MESSAGE_WITH_SOURCE,
+      );
+      expect(body.data.content).to.equal(
+        '븜스 입문용 정보 저장소입니다! https://sites.google.com/view/remilegi-bms',
+      );
     });
   });
 

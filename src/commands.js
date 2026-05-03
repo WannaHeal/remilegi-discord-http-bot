@@ -3,12 +3,12 @@
  * and registration.
  */
 
-export const AWW_COMMAND = {
-  name: 'awwww',
-  description: 'Drop some cuteness on this channel.',
+export const BMSINFO_COMMAND = {
+  name: 'bmsinfo',
+  description: 'BMS 정보 저장소 URL을 출력합니다.',
 };
 
-export const INVITE_COMMAND = {
-  name: 'invite',
-  description: 'Get an invite link to add the bot to your server',
+export const CAFE_COMMAND = {
+  name: '카페',
+  description: '카페 접속용 URL을 출력합니다.',
 };
